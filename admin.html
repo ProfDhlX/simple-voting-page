@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voting Page - Admin</title>
+    <link rel="stylesheet" type="text/css" href="incp/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Voting Page - Admin</h1>
+        <div id="admin-login">
+            <label for="admin-password">Admin Password:</label>
+            <input type="password" id="admin-password">
+            <button id="login-btn">Login</button>
+        </div>
+        <div id="admin-content" style="display:none;">
+            <h2>Register New Candidate</h2>
+            <input type="text" id="candidate-name" placeholder="Candidate Name">
+            <button id="register-btn">Register Candidate</button>
+            <h2>Delete Candidate</h2>
+            <select id="delete-option" name="delete-option">
+               
+            </select>
+            <button type="button" id="delete-btn">Delete Candidate</button>
+            <h2>Declare Winner</h2>
+            <button type="button" id="declare-winner-btn">Declare Winner</button>
+            <div class="results" id="results">
+                
+            </div>
+        </div>
+    </div>
+    <script src="incp/script.js"></script>
+</body>
+</html>
