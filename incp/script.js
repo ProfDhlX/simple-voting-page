@@ -1,7 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
     const adminPassword = 'admin123'; 
-    
     let candidates = JSON.parse(localStorage.getItem('candidates')) || [];
+    
+   
+    let voterIds = JSON.parse(localStorage.getItem('voterIds')) || [];
+    if (voterIds.length === 0) {
+        for (let i = 1; i <= 100; i++) {
+            voterIds.push(`Voter${i}`);
+        }
+        localStorage.setItem('voterIds', JSON.stringify(voterIds));
+    }
     
     if (window.location.pathname.includes('admin.html')) {
         const adminLogin = document.getElementById('admin-login');
@@ -12,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const deleteOptionSelect = document.getElementById('delete-option');
         const deleteBtn = document.getElementById('delete-btn');
         const declareWinnerBtn = document.getElementById('declare-winner-btn');
+        const resetBtn = document.getElementById('reset-btn');
         const resultsDiv = document.getElementById('results');
         
         loginBtn.addEventListener('click', function() {
@@ -55,6 +64,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 alert('No votes cast yet.');
             }
         });
+
+        resetBtn.addEventListener('click', function() {
+            localStorage.removeItem('votes');
+            alert('Voting data has been reset.');
+            displayResults();
+        });
         
         function displayCandidates() {
             deleteOptionSelect.innerHTML = '';
@@ -68,6 +83,7 @@ document.addEventListener('DOMContentLoaded', function() {
         
         function displayResults() {
             const votes = JSON.parse(localStorage.getItem('votes')) || {};
+            console.log(votes); 
             resultsDiv.innerHTML = '';
             for (const candidate of candidates) {
                 const resultElement = document.createElement('p');
@@ -95,8 +111,10 @@ document.addEventListener('DOMContentLoaded', function() {
         const votingForm = document.getElementById('voting-form');
         const voteBtn = document.getElementById('vote-btn');
         const optionSelect = document.getElementById('option');
+        const voterIdInput = document.getElementById('voter-id');
         
-       
+        voterIdInput.value = '';
+        
         for (const candidate of candidates) {
             const option = document.createElement('option');
             option.value = candidate;
@@ -106,13 +124,23 @@ document.addEventListener('DOMContentLoaded', function() {
         
         voteBtn.addEventListener('click', function() {
             const selectedCandidate = optionSelect.value;
-            if (selectedCandidate) {
-                let votes = JSON.parse(localStorage.getItem('votes')) || {};
-                votes[selectedCandidate] = (votes[selectedCandidate] || 0) + 1;
-                localStorage.setItem('votes', JSON.stringify(votes));
-                alert('Your vote has been recorded.');
+            const voterId = voterIdInput.value.trim();
+            if (selectedCandidate && voterId) {
+                if (voterIds.includes(voterId)) {
+                    let votes = JSON.parse(localStorage.getItem('votes')) || {};
+                    if (!votes[voterId]) {
+                        votes[voterId] = selectedCandidate;
+                        localStorage.setItem('votes', JSON.stringify(votes));
+                        alert('Your vote has been recorded.');
+                        displayResults(); 
+                    } else {
+                        alert('You have already voted.');
+                    }
+                } else {
+                    alert('Invalid voter ID.');
+                }
             } else {
-                alert('Please select a candidate before voting.');
+                alert('Please enter a valid voter ID and select a candidate before voting.');
             }
         });
     }
